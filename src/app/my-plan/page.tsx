@@ -7,6 +7,15 @@ import type { SortKey } from "@/types/workout";
 
 type Tab = "plan" | "saved";
 
+function toNumber(val: unknown): number {
+  if (typeof val === "number" && !isNaN(val)) return val;
+  if (typeof val === "string") {
+    const n = parseInt(val.replace(/[^\d]/g, ""), 10);
+    return isNaN(n) ? 0 : n;
+  }
+  return 0;
+}
+
 export default function MyPlanPage() {
   const { plan, saved, removeFromPlan, removeFromSaved, markDone } = usePlan();
   const [tab, setTab] = useState<Tab>("plan");
@@ -15,12 +24,12 @@ export default function MyPlanPage() {
   const list = tab === "plan" ? plan : saved;
 
   const sortedList = useMemo(
-    () => [...list].sort((a, b) => (b[sortBy] ?? 0) - (a[sortBy] ?? 0)),
+    () => [...list].sort((a, b) => toNumber(b[sortBy]) - toNumber(a[sortBy])),
     [list, sortBy]
   );
 
-  const totalMinutes = plan.reduce((s, w) => s + (w.duration || 0), 0);
-  const totalCalories = plan.reduce((s, w) => s + (w.calories || 0), 0);
+  const totalMinutes = plan.reduce((s, w) => s + toNumber(w.duration), 0);
+  const totalCalories = plan.reduce((s, w) => s + toNumber(w.calories), 0);
 
   const metrics: { label: string; value: number }[] = [
     { label: "Exercises", value: plan.length },
@@ -127,9 +136,9 @@ export default function MyPlanPage() {
                   </h3>
                   <p className="text-neutral-500 text-xs">{w.equipment}</p>
                   <div className="flex items-center gap-4 text-xs text-neutral-400 mt-2">
-                    <span>⏱ {w.duration} min</span>
-                    <span>🔥 {w.calories} kcal</span>
-                    <span>☆ {w.rating}</span>
+                    <span>⏱ {toNumber(w.duration)} min</span>
+                    <span>🔥 {toNumber(w.calories)} kcal</span>
+                    <span>☆ {toNumber(w.rating)}</span>
                   </div>
                 </div>
 

@@ -3,13 +3,15 @@ export interface Workout {
   name: string;
   description: string;
   image: string;
-  category: string | string[];
+  muscleGroups: string[];
+  category?: string | string[]; // normalized alias
   equipment: string;
   difficulty: string;
   sets: number;
   reps: string;
   duration: number;
   calories: number;
+  caloriesBurned?: number; // raw API field
   rating: number;
   instructions: string[];
 }
