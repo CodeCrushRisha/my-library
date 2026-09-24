@@ -7,6 +7,7 @@ import type { SortKey } from "@/types/workout";
 
 type Tab = "plan" | "saved";
 
+// Safe number parser
 function toNumber(val: unknown): number {
   if (typeof val === "number" && !isNaN(val)) return val;
   if (typeof val === "string") {
@@ -23,10 +24,11 @@ export default function MyPlanPage() {
 
   const list = tab === "plan" ? plan : saved;
 
-  const sortedList = useMemo(
-    () => [...list].sort((a, b) => toNumber(b[sortBy]) - toNumber(a[sortBy])),
-    [list, sortBy]
-  );
+  // ✅ Sort logic — highest first
+  const sortedList = useMemo(() => {
+    const copy = [...list];
+    return copy.sort((a, b) => toNumber(b[sortBy]) - toNumber(a[sortBy]));
+  }, [list, sortBy]);
 
   const totalMinutes = plan.reduce((s, w) => s + toNumber(w.duration), 0);
   const totalCalories = plan.reduce((s, w) => s + toNumber(w.calories), 0);
@@ -61,7 +63,7 @@ export default function MyPlanPage() {
         <div className="flex bg-neutral-950 border border-neutral-900 rounded-md p-1 w-fit">
           <button
             onClick={() => setTab("plan")}
-            className={`px-4 py-1.5 text-xs font-bold rounded ${
+            className={`px-4 py-1.5 text-xs font-bold rounded transition ${
               tab === "plan"
                 ? "bg-neutral-800 text-white"
                 : "text-neutral-400 hover:text-white"
@@ -71,7 +73,7 @@ export default function MyPlanPage() {
           </button>
           <button
             onClick={() => setTab("saved")}
-            className={`px-4 py-1.5 text-xs font-bold rounded ${
+            className={`px-4 py-1.5 text-xs font-bold rounded transition ${
               tab === "saved"
                 ? "bg-neutral-800 text-white"
                 : "text-neutral-400 hover:text-white"
@@ -81,12 +83,15 @@ export default function MyPlanPage() {
           </button>
         </div>
 
+        {/* Sort Dropdown — Same as Library */}
         <div className="flex items-center gap-3">
-          <span className="text-neutral-500 text-xs">Sort By</span>
+          <label className="text-neutral-500 text-xs font-medium whitespace-nowrap">
+            Sort By
+          </label>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as SortKey)}
-            className="bg-neutral-950 border border-neutral-800 text-white text-xs px-3 py-2 rounded-md"
+            className="bg-neutral-950 border border-neutral-800 text-white text-xs px-3 py-2 rounded-md cursor-pointer hover:border-lime-400/40 transition focus:outline-none focus:border-lime-400"
           >
             <option value="duration">Duration</option>
             <option value="calories">Calories</option>
