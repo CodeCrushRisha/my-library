@@ -8,7 +8,7 @@ export default function Toast() {
 
   return (
     <div
-      className={`fixed bottom-6 right-6 z-50 px-5 py-3 rounded-lg shadow-xl font-semibold text-sm text-black ${
+      className={`fixed top-20 right-6 z-50 px-5 py-3 rounded-lg shadow-xl font-semibold text-sm text-black animate-in slide-in-from-top-2 duration-200 ${
         toast.type === "error" ? "bg-red-400" : "bg-lime-400"
       }`}
     >
