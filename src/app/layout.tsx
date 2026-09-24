@@ -20,7 +20,8 @@ export default function RootLayout({
       <body className="bg-[#0a0a0a] text-white min-h-screen flex flex-col">
         <PlanProvider>
           <Navbar />
-          <main className="flex-1">{children}</main>
+          {/* pb-20 = footer er height-er soman padding bottom */}
+          <main className="flex-1 pb-20">{children}</main>
           <Footer />
           <Toast />
         </PlanProvider>
